@@ -75,6 +75,8 @@ class CartKinematicsABC(CartKinematics):
             raise self.printer.config_error(msg)
         
         # NOTE: Infer the triplet from one of the axes: 1 means XYZ; 2 means ABC.
+        msg = f'CartKinematicsABC axis_ids:"{axes_ids}"'
+        logging.info(msg)
         triplet_number = axes_ids[0] // 3
         # NOTE: Full set of axes, forced to length 3. Starting at the first axis index (e.g. 0 for [0,1,2]),
         #       and ending at +3 (e.g. 3 for [0,1,2]).
