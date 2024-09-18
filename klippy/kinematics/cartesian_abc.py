@@ -297,7 +297,7 @@ class CartKinematicsABC(CartKinematics):
         # Determine movement
         position_min, position_max = rail.get_range()
         hi = rail.get_homing_info()
-        homepos = [None for i in range(self.toolhead_axis_count + 1)]
+        homepos = [None for i in range(self.toolhead_pos_length)]
         homepos[axis] = hi.position_endstop
         forcepos = list(homepos)
         if hi.positive_dir:
