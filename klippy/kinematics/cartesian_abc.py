@@ -75,10 +75,11 @@ class CartKinematicsABC(CartKinematics):
             raise self.printer.config_error(msg)
         
         # NOTE: Infer the triplet from one of the axes: 1 means XYZ; 2 means ABC.
-        msg = f'CartKinematicsABC axis_ids:"{axes_ids}"'
+        msg = f'CartKinematicsABC axis_ids:"{axes_ids}" axis_names: "{self.axis_names}"'
         logging.info(msg)
         #BUG: When for example axis XYABCUVW is used then axis expanding is bugged because axes_ids[0]
         #XY should expand to XYZ and AB to ABC and UV to UVW, thats why you can't use the axes_ids[0]
+        triplet_number = None
         if(self.axis_names[0] in 'XYZ'):
             triplet_number = 0
         if(self.axis_names[0] == 'ABC'):
