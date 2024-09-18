@@ -329,14 +329,9 @@ class CartKinematicsABC(CartKinematics):
     
     def _check_endstops(self, move):
         logging.info(f"cartesian_abc._check_endstops: triggered on {self.axis_names}/{self.axis} move.")
-        move_tuple = [tuple(move.end_pos[i:i+3]) for i in range(0, len(move.end_pos), 3)]
+        logging.warning(f"check endstops is disabled")
+        return
         end_pos = move.end_pos
-        if(self.axis_names[0] in "XYZ"):
-            end_pos = move_tuple[0]
-        if(self.axis_names[0] in "ABC"):
-            end_pos = move_tuple[1]
-        if(self.axis_names[0] in "UVW"):
-            end_pos = move_tuple[2]
         for i, axis in enumerate(self.axis_config):
             # TODO: Check if its better to iterate over "self.axis" instead,
             #       which is forced to length 3. For now "self.axis_config"
@@ -345,11 +340,7 @@ class CartKinematicsABC(CartKinematics):
             #       indices for this kinematic during setup in the first place.
             #       Furthermore, limits are ordered by "self.axis_names", which
             #       correlates 1:1 with "self.axis_config".
-
-            
-
-
-            if (move.axes_d
+            if (move.axes_d[axis]
                 and (end_pos[axis] < self.limits[i][0]
                      or end_pos[axis] > self.limits[i][1])):
                 if self.limits[i][0] > self.limits[i][1]:
