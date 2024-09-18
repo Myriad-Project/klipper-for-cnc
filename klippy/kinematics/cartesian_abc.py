@@ -77,7 +77,15 @@ class CartKinematicsABC(CartKinematics):
         # NOTE: Infer the triplet from one of the axes: 1 means XYZ; 2 means ABC.
         msg = f'CartKinematicsABC axis_ids:"{axes_ids}"'
         logging.info(msg)
-        triplet_number = axes_ids[0] // 3
+        #BUG: When for example axis XYABCUVW is used then axis expanding is bugged because axes_ids[0]
+        #XY should expand to XYZ and AB to ABC and UV to UVW, thats why you can't use the axes_ids[0]
+        if(self.axis_names[0] in 'XYZ'):
+            triplet_number = 0
+        if(self.axis_names[0] == 'ABC'):
+            triplet_number = 1
+        if(self.axis_names[0] == 'UVW'):
+            triplet_number = 2
+        #triplet_number = axes_ids[0] // 3
         # NOTE: Full set of axes, forced to length 3. Starting at the first axis index (e.g. 0 for [0,1,2]),
         #       and ending at +3 (e.g. 3 for [0,1,2]).
         # NOTE: This attribute is used to select starting positions from a "move" object (see toolhead.py),
