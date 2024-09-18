@@ -330,7 +330,7 @@ class CartKinematicsABC(CartKinematics):
     def _check_endstops(self, move):
         logging.info(f"cartesian_abc._check_endstops: triggered on {self.axis_names}/{self.axis} move.")
         end_pos = move.end_pos
-        for i, axis in enumerate(self.axis_config):
+        for i, axis in enumerate(self.axis_names):
             # TODO: Check if its better to iterate over "self.axis" instead,
             #       which is forced to length 3. For now "self.axis_config"
             #       seems more reasonable, as it will be the toolhead passing
@@ -367,6 +367,8 @@ class CartKinematicsABC(CartKinematics):
             # TODO: Check if its better to iterate over "self.axis" instead,
             #       see rationale in favor of "axis_config" above, at "_check_endstops".
             pos = move.end_pos[axis]
+            logging.info(f"cartesian_abc.check_move: pos: {pos}")
+            logging.info(f"cartesian_abc.check_move: limits: {self.limits}")
             limit_checks.append(pos < self.limits[i][0] or pos > self.limits[i][1])
         if any(limit_checks):
             self._check_endstops(move)

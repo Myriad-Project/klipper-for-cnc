@@ -436,7 +436,6 @@ class ToolHead:
 
         # Axis sets and names for them are partially hardcoded all around.
         self.axis_triplets = ["XYZ", "ABC", "UVW"]  # TODO: generalize the code to support "UVW" axes.
-        self.axis_triplets = ["XY", "ABC", "UVW"]  # TODO: generalize the code to support "UVW" axes.
         self.ax_letters = "".join(self.axis_triplets)
         for l in self.axis_names:
             if l not in self.ax_letters:
@@ -621,6 +620,8 @@ class ToolHead:
                                                          axis_set_letters=xyz_axes)
             # Save the kinematics to the dict.
             self.kinematics["XYZ"] = self.kin
+            #if "Z" not in self.axis_names:
+            #    self.axes += [self.axis_map["Z"]]
         else:
             self.kin, self.trapq = None, None
 
