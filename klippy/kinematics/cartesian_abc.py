@@ -329,7 +329,14 @@ class CartKinematicsABC(CartKinematics):
     
     def _check_endstops(self, move):
         logging.info(f"cartesian_abc._check_endstops: triggered on {self.axis_names}/{self.axis} move.")
+        move_tuple = [tuple(move.end_pos[i:i+3]) for i in range(0, len(move.end_pos), 3)]
         end_pos = move.end_pos
+        if(self.axis_names[0] in "XYZ"):
+            end_pos = move_tuple[0][i]
+        if(self.axis_names[0] in "ABC"):
+            end_pos = move_tuple[1][i]
+        if(self.axis_names[0] in "UVW"):
+            end_pos = move_tuple[2][i]
         for i, axis in enumerate(self.axis_config):
             # TODO: Check if its better to iterate over "self.axis" instead,
             #       which is forced to length 3. For now "self.axis_config"
@@ -338,13 +345,17 @@ class CartKinematicsABC(CartKinematics):
             #       indices for this kinematic during setup in the first place.
             #       Furthermore, limits are ordered by "self.axis_names", which
             #       correlates 1:1 with "self.axis_config".
-            if (move.axes_d[axis]
-                and (end_pos[axis] < self.limits[i][0]
-                     or end_pos[axis] > self.limits[i][1])):
+
+            
+
+
+            if (move.axes_d
+                and (end_pos < self.limits[i][0]
+                     or end_pos > self.limits[i][1])):
                 if self.limits[i][0] > self.limits[i][1]:
                     # NOTE: self.limits will be "(1.0, -1.0)" when not homed, triggering this.
                     msg = "".join([f"cartesian_abc._check_endstops: Must home axis {self.axis_names[i]} first,",
-                                   f"limits={self.limits[i]} end_pos[axis]={end_pos[axis]} ",
+                                   f"limits={self.limits[i]} end_pos[axis]={end_pos} ",
                                    f"move.axes_d[axis]={move.axes_d[axis]}"])
                     logging.info(msg)
                     raise move.move_error(f"Must home axis {self.axis_names[i]} first")
