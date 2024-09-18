@@ -82,9 +82,9 @@ class CartKinematicsABC(CartKinematics):
         triplet_number = None
         if(self.axis_names[0] in 'XYZ'):
             triplet_number = 0
-        if(self.axis_names[0] == 'ABC'):
+        if(self.axis_names[0] in 'ABC'):
             triplet_number = 1
-        if(self.axis_names[0] == 'UVW'):
+        if(self.axis_names[0] in 'UVW'):
             triplet_number = 2
         #triplet_number = axes_ids[0] // 3
         # NOTE: Full set of axes, forced to length 3. Starting at the first axis index (e.g. 0 for [0,1,2]),
