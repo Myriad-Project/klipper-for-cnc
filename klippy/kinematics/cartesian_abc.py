@@ -289,7 +289,7 @@ class CartKinematicsABC(CartKinematics):
             # NOTE: This will put the axis to a "homed" state, which means that
             #       the unhomed part of the kinematic move check will pass from
             #       now on.
-            logging.info(f"CartKinematicsABC: setting limits={rail.get_range()} on stepper: {rail.get_name()}")
+            logging.info(f"CartKinematicsABC: for axis: {axis} setting limits={rail.get_range()} on stepper: {rail.get_name()}")
             self.limits[axis] = rail.get_range()
 
     def note_z_not_homed(self):
