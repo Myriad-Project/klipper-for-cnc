@@ -332,11 +332,11 @@ class CartKinematicsABC(CartKinematics):
         move_tuple = [tuple(move.end_pos[i:i+3]) for i in range(0, len(move.end_pos), 3)]
         end_pos = move.end_pos
         if(self.axis_names[0] in "XYZ"):
-            end_pos = move_tuple[0][i]
+            end_pos = move_tuple[0]
         if(self.axis_names[0] in "ABC"):
-            end_pos = move_tuple[1][i]
+            end_pos = move_tuple[1]
         if(self.axis_names[0] in "UVW"):
-            end_pos = move_tuple[2][i]
+            end_pos = move_tuple[2]
         for i, axis in enumerate(self.axis_config):
             # TODO: Check if its better to iterate over "self.axis" instead,
             #       which is forced to length 3. For now "self.axis_config"
