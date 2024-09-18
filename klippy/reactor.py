@@ -210,6 +210,11 @@ class SelectReactor:
         self.register_fd(self._pipe_fds[0], self._got_pipe_signal)
     # Greenlets
     def _sys_pause(self, waketime):
+        #NOTE: What would happen if we diasable the sleep functionality or disable long sleep times.
+        #pause command is used alot in the klipper architecture, when disabeling this the CPU would process more commands.
+        #This can be a problem for RPI based system, but why stick to this SBC, let's go threadripper (just making a point ^-^ )
+        #Problem is that the accuracy is heavily dependend on the host OS.
+
         # Pause using system sleep for when reactor not running
         delay = waketime - self.monotonic()
         if delay > 0.:
