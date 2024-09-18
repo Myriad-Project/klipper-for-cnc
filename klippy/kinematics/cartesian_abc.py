@@ -368,7 +368,8 @@ class CartKinematicsABC(CartKinematics):
             #       see rationale in favor of "axis_config" above, at "_check_endstops".
             pos = move.end_pos[axis]
             logging.info(f"cartesian_abc.check_move: pos: {pos}")
-            logging.info(f"cartesian_abc.check_move: limits: {self.limits[i]}")
+            logging.info(f"cartesian_abc.check_move: limits[0]: {self.limits[i][0]}")
+            logging.info(f"cartesian_abc.check_move: limits[1]: {self.limits[i][1]}")
             limit_checks.append(pos < self.limits[i][0] or pos > self.limits[i][1])
         if any(limit_checks):
             self._check_endstops(move)
