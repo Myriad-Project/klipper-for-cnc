@@ -139,7 +139,7 @@ class CartKinematicsABC(CartKinematics):
         xyz_axis_names = "xyz"[:len(self.axis_names)]
 
         for rail, axis in zip(self.rails, xyz_axis_names):
-            msg = f"CartKinematicsABC: rail:{rail} linked to axis: {axis}"
+            msg = f"CartKinematicsABC: rail:{rail.get_name()} linked to axis: {axis}"
             logging.info(msg)
             rail.setup_itersolve('cartesian_stepper_alloc', axis.encode())
 
