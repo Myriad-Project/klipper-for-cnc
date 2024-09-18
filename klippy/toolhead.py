@@ -1102,8 +1102,8 @@ class ToolHead:
         Has no effect on XYZ IDs
         """
         logging.info(f"toolhead.axes_to_xyz: input={axes}")
-
-        xyz_ids = [0, 1, 2, 0, 1, 2]
+        #NOTE: This should need to expand automaticly with the configured axis
+        xyz_ids = [0, 1, 2, 0, 1, 2, 0, 1, 2]
 
         try:
             if isinstance(axes, list) or isinstance(axes, tuple):
