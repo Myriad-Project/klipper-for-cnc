@@ -135,8 +135,12 @@ class CartKinematicsABC(CartKinematics):
         # NOTE: Can be "xyz", "xy", or just "x". This does not need to correspond
         #       to the actual axis names, the intuition is to mimic the manual stepper
         #       setup, starting with just "x", and then allow more axes to be setup.
+
         xyz_axis_names = "xyz"[:len(self.axis_names)]
+
         for rail, axis in zip(self.rails, xyz_axis_names):
+            msg = f"CartKinematicsABC: rail:{rail} linked to axis: {axis}"
+            logging.info(msg)
             rail.setup_itersolve('cartesian_stepper_alloc', axis.encode())
 
         # Setup boundary checks.
