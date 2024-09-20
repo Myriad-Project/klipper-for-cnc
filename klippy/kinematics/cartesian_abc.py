@@ -75,6 +75,17 @@ class CartKinematicsABC(CartKinematics):
             raise self.printer.config_error(msg)
         
         # NOTE: Infer the triplet from one of the axes: 1 means XYZ; 2 means ABC.
+        msg = f'CartKinematicsABC axis_ids:"{axes_ids}" axis_names: "{self.axis_names}"'
+        logging.info(msg)
+        #BUG: When for example axis XYABCUVW is used then axis expanding is bugged because axes_ids[0]
+        #XY should expand to XYZ and AB to ABC and UV to UVW, thats why you can't use the axes_ids[0]
+        #triplet_number = None
+        #if(self.axis_names[0] in 'XYZ'):
+        #    triplet_number = 0
+        #if(self.axis_names[0] in 'ABC'):
+        #    triplet_number = 1
+        #if(self.axis_names[0] in 'UVW'):
+        #    triplet_number = 2
         triplet_number = axes_ids[0] // 3
         # NOTE: Full set of axes, forced to length 3. Starting at the first axis index (e.g. 0 for [0,1,2]),
         #       and ending at +3 (e.g. 3 for [0,1,2]).
@@ -124,8 +135,12 @@ class CartKinematicsABC(CartKinematics):
         # NOTE: Can be "xyz", "xy", or just "x". This does not need to correspond
         #       to the actual axis names, the intuition is to mimic the manual stepper
         #       setup, starting with just "x", and then allow more axes to be setup.
+
         xyz_axis_names = "xyz"[:len(self.axis_names)]
+
         for rail, axis in zip(self.rails, xyz_axis_names):
+            msg = f"CartKinematicsABC: rail:{rail.get_name()} linked to axis: {axis}"
+            logging.info(msg)
             rail.setup_itersolve('cartesian_stepper_alloc', axis.encode())
 
         # Setup boundary checks.
@@ -274,7 +289,7 @@ class CartKinematicsABC(CartKinematics):
             # NOTE: This will put the axis to a "homed" state, which means that
             #       the unhomed part of the kinematic move check will pass from
             #       now on.
-            logging.info(f"CartKinematicsABC: setting limits={rail.get_range()} on stepper: {rail.get_name()}")
+            logging.info(f"CartKinematicsABC: for axis: {axis} setting limits={rail.get_range()} on stepper: {rail.get_name()}")
             self.limits[axis] = rail.get_range()
 
     def note_z_not_homed(self):
@@ -314,6 +329,7 @@ class CartKinematicsABC(CartKinematics):
     
     def _check_endstops(self, move):
         logging.info(f"cartesian_abc._check_endstops: triggered on {self.axis_names}/{self.axis} move.")
+        logging.warning(f"check endstops is disabled")
         end_pos = move.end_pos
         for i, axis in enumerate(self.axis_config):
             # TODO: Check if its better to iterate over "self.axis" instead,
@@ -348,11 +364,22 @@ class CartKinematicsABC(CartKinematics):
         """
         limit_checks = []
         logging.info(f"cartesian_abc.check_move: checking move ending on {move.end_pos}.")
+        logging.info(f"cartesian_abc.check_move: axis config {self.axis_config}.")
         for i, axis in enumerate(self.axis_config):
             # TODO: Check if its better to iterate over "self.axis" instead,
             #       see rationale in favor of "axis_config" above, at "_check_endstops".
             pos = move.end_pos[axis]
+            #if(self.axis_names[0] in "XYZ"):
+            #    pos = move_tuple[0][i]
+            #if(self.axis_names[0] in "ABC"):
+            #    pos = move_tuple[1][i]
+            #if(self.axis_names[0] in "UVW"):
+            #    pos = move_tuple[2][i]
+            logging.info(f"cartesian_abc.check_move: pos: {pos} axis: {axis}")
+            logging.info(f"cartesian_abc.check_move: limits[0]: {self.limits[i][0]}")
+            logging.info(f"cartesian_abc.check_move: limits[1]: {self.limits[i][1]}")
             limit_checks.append(pos < self.limits[i][0] or pos > self.limits[i][1])
+
         if any(limit_checks):
             self._check_endstops(move)
         
