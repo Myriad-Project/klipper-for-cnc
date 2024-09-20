@@ -362,12 +362,9 @@ class CartKinematicsABC(CartKinematics):
         Args:
             move (tolhead.Move): Instance of the Move class.
         """
-        #NOTE: pos in move is allways aligned per 3 axis so if you configure your machine to be XYABC
-        # the pos will be XYZABC
-        move_tuple = [tuple(move.end_pos[i:i+3]) for i in range(0, len(move.end_pos), 3)]
-
         limit_checks = []
         logging.info(f"cartesian_abc.check_move: checking move ending on {move.end_pos}.")
+        logging.info(f"cartesian_abc.check_move: axis config {self.axis_config}.")
         for i, axis in enumerate(self.axis_config):
             # TODO: Check if its better to iterate over "self.axis" instead,
             #       see rationale in favor of "axis_config" above, at "_check_endstops".
@@ -382,6 +379,7 @@ class CartKinematicsABC(CartKinematics):
             logging.info(f"cartesian_abc.check_move: limits[0]: {self.limits[i][0]}")
             logging.info(f"cartesian_abc.check_move: limits[1]: {self.limits[i][1]}")
             limit_checks.append(pos < self.limits[i][0] or pos > self.limits[i][1])
+
         if any(limit_checks):
             self._check_endstops(move)
         
