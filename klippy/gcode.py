@@ -436,7 +436,8 @@ class GCodeIO:
         self.fd = printer.get_start_args().get("gcode_fd")
         #Create simlink to self.fd
         symlink_path = "/dev/ttyKlippy"
-        logging.info(f"Creating simlink for {symlink_path}")
+        logging.info(f"Creating simlink for {symlink_path} to {self.fd}")
+
         try:
             # Remove existing symlink if it exists
             if os.path.exists(symlink_path):
