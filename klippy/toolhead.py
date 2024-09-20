@@ -658,7 +658,7 @@ class ToolHead:
         self.axes = xyz_ids + abc_ids + uvw_ids
         
         # Add the extruder axis.
-        self.axes += [self.axis_map["E"]]
+        #self.axes += [self.axis_map["E"]]
 
     # Load kinematics object
     def setup_kinematics(self, config, axes_ids, config_name='kinematics', axis_set_letters="XYZ"):
