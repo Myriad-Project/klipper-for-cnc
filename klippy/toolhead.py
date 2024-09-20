@@ -607,11 +607,10 @@ class ToolHead:
             config (_type_): Klipper configuration object.
         """
 
-
-
         # Get and setup XYZ axes.
         xyz_axes = ''.join([ax for ax in self.axis_names if ax in "XYZ"])       # e.g. "XY"
         xyz_ids = [i for i, ax in enumerate(self.axis_names) if ax in "XYZ"]    # e.g. "[0, 1]"
+        xyz_ids = [self.axis_map[ax] for ax in self.axis_names if ax in "XYZ"]  # e.g. "[0, 1]"
         if xyz_axes:
             # Create XYZ kinematics class, and its XYZ trapq (iterative solver).
             self.kin, self.trapq = self.setup_kinematics(config=config,
@@ -620,30 +619,26 @@ class ToolHead:
                                                          axis_set_letters=xyz_axes)
             # Save the kinematics to the dict.
             self.kinematics["XYZ"] = self.kin
-            #if "Z" not in self.axis_names:
-            #    self.axes += [self.axis_map["Z"]]
         else:
             self.kin, self.trapq = None, None
 
         # Setup ABC axes
         abc_axes = ''.join([ax for ax in self.axis_names if ax in "ABC"])       # e.g. "AB"
         abc_ids = [i for i, ax in enumerate(self.axis_names) if ax in "ABC"]    # e.g. "[3, 4]"
+        abc_ids = [self.axis_map[ax] for ax in self.axis_names if ax in "ABC"]  # e.g. "[3, 4]"
         if abc_axes:
             # Create ABC kinematics class, and its ABC trapq (iterative solver).
             self.kin_abc, self.abc_trapq = self.setup_kinematics(config=config,
                                                                  config_name='kinematics_abc',
                                                                  axes_ids=abc_ids, # e.g. [3, 4 ,5]
                                                                  axis_set_letters=abc_axes)
-            # Save the kinematics to the dict.
-            self.kinematics["ABC"] = self.kin_abc
-        else:
-            self.kin_abc, self.abc_trapq = None, None
 
         #TODO: Make this a more generic routine to add in segments of 3 axis to a set max limit
 
         # Setup UVW axes
         uvw_axes = ''.join([ax for ax in self.axis_names if ax in "UVW"])       # e.g. "AB"
         uvw_ids = [i for i, ax in enumerate(self.axis_names) if ax in "UVW"]    # e.g. "[3, 4]"
+        uvw_ids = [self.axis_map[ax] for ax in self.axis_names if ax in "UVW"]  # e.g. "[3, 4]"
         if uvw_axes:
             # Create UVW kinematics class, and its UVW trapq (iterative solver).
             self.kin_uvw, self.uvw_trapq = self.setup_kinematics(config=config,
@@ -1582,6 +1577,8 @@ class ToolHead:
         if axes == "XYZ":
             return self.kinematics[axes]
         elif axes == "ABC":
+            return self.kinematics[axes]
+        elif axes == "UVW":
             return self.kinematics[axes]
         else:
             logging.warning(f"get_kinematics: No kinematics matched to axes={axes} returning 'toolhead.kin' (legacy behaviour).")
