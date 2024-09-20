@@ -451,7 +451,10 @@ class GCodeIO:
 
         #Create simlink to self.fd
         symlink_path = "/dev/ttyKlippy"
-        logging.info(f"Creating simlink for {symlink_path} to {os.ttyname(self.fd)}")
+        symlink_to = os.ttyname(self.fd)
+        symlink_to = "/dev/pts/0"
+                                
+        logging.info(f"Creating simlink for {symlink_path} to {symlink_to}")
         logging.info(f"Creating simlink for {symlink_path}")
 
         try:
@@ -459,7 +462,7 @@ class GCodeIO:
             if os.path.exists(symlink_path):
                 os.remove(symlink_path)
             # Create new symlink
-            os.symlink(os.ttyname(self.fd), symlink_path)
+            os.symlink(symlink_to, symlink_path)
             logging.info(f"Symlink created at: {symlink_path}")
         except PermissionError:
             logging.error("Permission denied. You need to run this script as root to create a symlink in /dev.")
