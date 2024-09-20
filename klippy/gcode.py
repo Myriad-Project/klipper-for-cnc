@@ -434,6 +434,19 @@ class GCodeIO:
         self.gcode = printer.lookup_object('gcode')
         self.gcode_mutex = self.gcode.get_mutex()
         self.fd = printer.get_start_args().get("gcode_fd")
+
+        #Create simlink to self.fd
+        symlink_path = "/dev/ttyKlippy"
+        try:
+            # Remove existing symlink if it exists
+            if os.path.exists(symlink_path):
+                os.remove(symlink_path)
+            # Create new symlink
+            os.symlink(self.fd, symlink_path)
+            logging.info(f"Symlink created at: {symlink_path}")
+        except PermissionError:
+            logging.error("Permission denied. You need to run this script as root to create a symlink in /dev.")
+
         self.reactor = printer.get_reactor()
         self.is_printer_ready = False
         self.is_processing_data = False
