@@ -434,22 +434,6 @@ class GCodeIO:
         self.gcode = printer.lookup_object('gcode')
         self.gcode_mutex = self.gcode.get_mutex()
         self.fd = printer.get_start_args().get("gcode_fd")
-        #Create simlink to self.fd
-        symlink_path = "/dev/ttyKlippy"
-        logging.info(f"Creating simlink for {symlink_path} to {self.fd}")
-
-        try:
-            # Remove existing symlink if it exists
-            if os.path.exists(symlink_path):
-                os.remove(symlink_path)
-            # Create new symlink
-            os.symlink(self.fd, symlink_path)
-            logging.info(f"Symlink created at: {symlink_path}")
-        except PermissionError:
-            logging.error("Permission denied. You need to run this script as root to create a symlink in /dev.")
-        except Exception as e:
-            logging.error(e)
-
         self.reactor = printer.get_reactor()
         self.is_printer_ready = False
         self.is_processing_data = False
@@ -464,6 +448,26 @@ class GCodeIO:
         self.pending_commands = []
         self.bytes_read = 0
         self.input_log = collections.deque([], 50)
+
+        #Create simlink to self.fd
+        symlink_path = "/dev/ttyKlippy"
+        logging.info(f"Creating simlink for {symlink_path} to {os.ttyname(self.fd)}")
+        logging.info(f"Creating simlink for {symlink_path}")
+
+        try:
+            # Remove existing symlink if it exists
+            if os.path.exists(symlink_path):
+                os.remove(symlink_path)
+            # Create new symlink
+            os.symlink(os.ttyname(self.fd), symlink_path)
+            logging.info(f"Symlink created at: {symlink_path}")
+        except PermissionError:
+            logging.error("Permission denied. You need to run this script as root to create a symlink in /dev.")
+        except Exception as e:
+            logging.error(e)
+
+
+
     def _handle_ready(self):
         self.is_printer_ready = True
         if self.is_fileinput and self.fd_handle is None:
