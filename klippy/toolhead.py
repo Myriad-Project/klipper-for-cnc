@@ -632,6 +632,10 @@ class ToolHead:
                                                                  config_name='kinematics_abc',
                                                                  axes_ids=abc_ids, # e.g. [3, 4 ,5]
                                                                  axis_set_letters=abc_axes)
+            # Save the kinematics to the dict.
+            self.kinematics["ABC"] = self.kin_abc
+        else:
+            self.kin_abc, self.abc_trapq = None, None
 
         #TODO: Make this a more generic routine to add in segments of 3 axis to a set max limit
 
